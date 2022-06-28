@@ -7,19 +7,19 @@ import androidx.room.RoomDatabase
 
 
 @Database(entities = [Subscriber::class], version = 1)
-abstract class SubscriberDatabase : RoomDatabase() {
+abstract class SubscriberDataBase : RoomDatabase() {
     abstract val subscriberDAO: SubscriberDAO
 
     companion object {
         @Volatile
-        private var INSTANCE: SubscriberDatabase? = null
-        fun getInstance(context: Context): SubscriberDatabase {
+        private var INSTANCE: SubscriberDataBase? = null
+        fun getInstance(context: Context): SubscriberDataBase {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                        SubscriberDatabase::class.java,
+                        SubscriberDataBase::class.java,
                         "subscriber_data_database"
                     ).build()
                 }
