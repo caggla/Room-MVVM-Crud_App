@@ -2,10 +2,7 @@ package com.example.roommvvmcrudapp
 
 
 import android.util.Patterns
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.roommvvmcrudapp.db.Subscriber
 import com.example.roommvvmcrudapp.db.SubscriberRepository
 import kotlinx.coroutines.launch
@@ -55,4 +52,12 @@ class SubscriberViewModel(private val repository: SubscriberRepository) : ViewMo
             statusMessage.value = Event("Error Occurred")
         }
     }
+
+
+    fun getSavedSubscribers() = liveData {
+        repository.subscribers.collect {
+            emit(it)
+        }
+    }
+
 }
