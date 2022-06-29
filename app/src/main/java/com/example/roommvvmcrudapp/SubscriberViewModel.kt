@@ -7,6 +7,7 @@ import com.example.roommvvmcrudapp.db.Subscriber
 import com.example.roommvvmcrudapp.db.SubscriberRepository
 import kotlinx.coroutines.launch
 
+
 class SubscriberViewModel(private val repository: SubscriberRepository) : ViewModel() {
 
     val inputName = MutableLiveData<String>()
@@ -14,16 +15,14 @@ class SubscriberViewModel(private val repository: SubscriberRepository) : ViewMo
     val saveOrUpdateButtonText = MutableLiveData<String>()
     val clearAllOrDeleteButtonText = MutableLiveData<String>()
 
-    private val statusMessage = MutableLiveData<Event<String>>() //bu kısım Event class ı için. Encapsulation
+    private val statusMessage = MutableLiveData<Event<String>>()
     val message: LiveData<Event<String>>
         get() = statusMessage
-
 
     init {
         saveOrUpdateButtonText.value = "Save"
         clearAllOrDeleteButtonText.value = "Clear All"
     }
-
 
     fun saveOrUpdate() {
 
@@ -42,8 +41,6 @@ class SubscriberViewModel(private val repository: SubscriberRepository) : ViewMo
         }
     }
 
-
-
     private fun insertSubscriber(subscriber: Subscriber) = viewModelScope.launch {
         val newRowId = repository.insert(subscriber)
         if (newRowId > -1) {
@@ -53,11 +50,22 @@ class SubscriberViewModel(private val repository: SubscriberRepository) : ViewMo
         }
     }
 
-
     fun getSavedSubscribers() = liveData {
         repository.subscribers.collect {
             emit(it)
         }
     }
 
+    fun clearAllOrDelete() {
+        clearAll()
+    }
+
+    private fun clearAll() = viewModelScope.launch {
+        val noOfRowsDeleted = repository.deleteAll()
+        if (noOfRowsDeleted > 0) {
+            statusMessage.value = Event("$noOfRowsDeleted Subscribers Deleted Successfully")
+        } else {
+            statusMessage.value = Event("Error Occurred")
+        }
+    }
 }
